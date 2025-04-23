@@ -86,14 +86,14 @@ public class Board {
             int fugitiveRoll = diceRoll(disadvantage ? 3 : 6);
             int copsRoll = diceRoll(6);
 
-            board[fugitivePos] = hiddenBuff ? TREE : EVIDENCE;
+            board[fugitivePos] = fugitivePos == treePos ? TREE : EVIDENCE;
             moveFugitive(fugitiveRoll + (hiddenBuff ? 1 : 0));
+            board[copsPos] = copsPos == treePos ? TREE : RESTRICTION;
+            moveCops(copsRoll);
 
             hiddenBuff = fugitivePos == treePos;
             disadvantage = board[fugitivePos].equals(RESTRICTION);
 
-            board[copsPos] = copsPos == treePos ? TREE : RESTRICTION;
-            moveCops(copsRoll);
             boolean copsEvidence = board[copsPos].equals(EVIDENCE);
             int captureRadius = copsEvidence ? 2 : 1;
 
