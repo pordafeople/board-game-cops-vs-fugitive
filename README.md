@@ -1,12 +1,10 @@
 NOTES:
-board size is 10
-
-
-
-
-this counts as an index away
-F HHHHHHHHHHHHHHHH C
-C HHHHHHHHHHHHHHHH F
+- board size is 10.
+- fugitive does not instantly step forward when hidden in the trees.
+- cops can capture both forward and backward.
+- cops can capture even with wraparound. this counts as an index away:
+  - `[⛔🏃]	[💰]	[🌳]	[🏠]	[🏠]	[💰]	[⛔]	[🏠]	[⛔]	[🏠🚓]	`
+- when the fugitive and the cops are in the same tile, the emojis are so thicc that they do not fit in one tab width.
 
 DOCS:
 Create a program that would simulate the capture of the fugitive, Alejandro, using a boardgame-like system. The boardgame would follow these instructions:
