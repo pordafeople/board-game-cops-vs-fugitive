@@ -15,16 +15,10 @@ public class Board {
 
     String[] board;
     FileWriter out;
+    // for convenience, we store the positions of the fugitive and the cops
     int fugitivePos;
     int copsPos;
     int treePos;
-
-    public void test() {
-//        for (int i = 0; i < 100; i++) {
-//            int roll = diceRoll(6);
-//            System.out.print(roll + " ");
-//        }
-    }
 
     public Board(String fileName, int boardSize) throws IOException {
         out = new FileWriter(fileName);
@@ -65,9 +59,7 @@ public class Board {
     }
 
     int modularDistance(int a, int b) {
-        int rawDiff = a - b;
-        int modularDiff = (rawDiff + board.length) % board.length;
-        return Math.abs(modularDiff);
+        return (Math.abs(a - b) + board.length) % board.length;
     }
 
     void write() throws IOException {
@@ -79,28 +71,35 @@ public class Board {
 
     public void run(int loopCount) throws IOException {
         write();
-        boolean hiddenBuff = false;
-        boolean disadvantage = false;
+        boolean fugitiveHiddenBuff = false;
+        boolean fugitiveRestrictionDebuff = false;
         boolean captured = false;
         for (int i = 0; i < loopCount; i++) {
-            int fugitiveRoll = diceRoll(disadvantage ? 3 : 6);
+            // first we roll the dice
+            int fugitiveRoll = diceRoll(fugitiveRestrictionDebuff ? 3 : 6);
             int copsRoll = diceRoll(6);
 
+            // then both of them leave the board and leave their traces
             board[fugitivePos] = fugitivePos == treePos ? TREE : EVIDENCE;
-            moveFugitive(fugitiveRoll + (hiddenBuff ? 1 : 0));
             board[copsPos] = copsPos == treePos ? TREE : RESTRICTION;
+            // then they move to their next positions
+            moveFugitive(fugitiveRoll + (fugitiveHiddenBuff ? 1 : 0));
             moveCops(copsRoll);
 
-            hiddenBuff = fugitivePos == treePos;
-            disadvantage = board[fugitivePos].equals(RESTRICTION);
+            // then we check for buffs and debuffs on the landing positions
+            fugitiveHiddenBuff = fugitivePos == treePos;
+            fugitiveRestrictionDebuff = board[fugitivePos].equals(RESTRICTION);
+            boolean copsEvidenceBuff = board[copsPos].equals(EVIDENCE);
+            int captureRadius = copsEvidenceBuff ? 2 : 1;
 
-            boolean copsEvidence = board[copsPos].equals(EVIDENCE);
-            int captureRadius = copsEvidence ? 2 : 1;
-
+            // then we place them back on the board
             board[fugitivePos] += FUGITIVE;
             board[copsPos] += COPS;
+            // then we display the board
             write();
-            if (modularDistance(fugitivePos, copsPos) <= captureRadius && !hiddenBuff) {
+
+            // then check if the cops can capture the fugitive
+            if (modularDistance(fugitivePos, copsPos) <= captureRadius && !fugitiveHiddenBuff) {
                 captured = true;
                 break;
             }
