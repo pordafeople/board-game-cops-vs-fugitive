@@ -59,7 +59,11 @@ public class Board {
     }
 
     int modularDistance(int a, int b) {
-        return (Math.abs(a - b) + board.length) % board.length;
+        int diff = a - b;
+        int modularDiff = (diff + board.length) % board.length;
+        int half = board.length / 2;
+        int signedDiff = (modularDiff + half) % board.length - half;
+        return Math.abs(signedDiff);
     }
 
     void write() throws IOException {
