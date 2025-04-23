@@ -37,11 +37,11 @@ public class Board {
 
         // place alejandro at the 6th index
         fugitivePos = 5;
-        board[fugitivePos] = FUGITIVE;
+        board[fugitivePos] += FUGITIVE;
 
         // place the cops at the 1st index
         copsPos = 0;
-        board[copsPos] = COPS;
+        board[copsPos] += COPS;
 
         // spawn a tree at any random location other than cop/fugitive
         do {
@@ -72,7 +72,7 @@ public class Board {
 
     void write() throws IOException {
         for (int i = 0; i < board.length; i++) {
-            out.write(String.format("[%s]", board[i]));
+            out.write(String.format("[%s]\t", board[i]));
         }
         out.write("\n");
     }
@@ -97,8 +97,8 @@ public class Board {
             boolean copsEvidence = board[copsPos].equals(EVIDENCE);
             int captureRadius = copsEvidence ? 2 : 1;
 
-            board[fugitivePos] = FUGITIVE;
-            board[copsPos] = COPS;
+            board[fugitivePos] += FUGITIVE;
+            board[copsPos] += COPS;
             write();
             if (modularDistance(fugitivePos, copsPos) <= captureRadius && !hiddenBuff) {
                 captured = true;
